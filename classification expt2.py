@@ -12,13 +12,17 @@ y = df.iloc[:, -1].values
 X = X.reshape(-1, 1)
 df.head()
 
-OR
+#OR
 
-from sklearn.datasets import fetch_california_housing
-data = fetch_california_housing()
+from sklearn.datasets import load_iris
+data = load_iris()
 df = pd.DataFrame(data=data.data, columns=data.feature_names)
 df['target'] = data.target
 df.head()
+X = df.iloc[:, 3].values # estimated salary
+y = df.iloc[:, -1].values
+X = X.reshape(-1, 1)
+
 
 print(X)
 print(y)
