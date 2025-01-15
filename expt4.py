@@ -2,21 +2,19 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-# Import support vector regressor algorithm
 from sklearn.svm import SVR
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-# Import modelling methods
 from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, cross_val_score
-# Import the model performance evaluation metrics
 from sklearn import metrics
-# Import Adaboost, Gradient Boost, Random Forest and Stacking algorithm
+
 from sklearn.ensemble import AdaBoostClassifier, GradientBoostingRegressor, RandomForestRegressor, StackingRegressor
-import warnings
-warnings.filterwarnings('ignore')
+
+#import warnings
+#warnings.filterwarnings('ignore')
+
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.datasets import fetch_california_housing   # to import boston housing dataset
-# to visualize decision boundaries
+from sklearn.datasets import fetch_california_housing   
 import graphviz
 import xgboost as xgb
 from xgboost import XGBRegressor
@@ -25,48 +23,58 @@ from xgboost import XGBRegressor
 df = pd.read_csv('indian_liver_patient.csv')
 df.head()
 
+OR
 
-# Check for missing values
+data = load_iris()
+X = data.data
+y = data.target
+df = pd.DataFrame(data=data.data, columns = data.feature_names)
+df['target'=data.target
+df.head
+
+
+
 df.isnull().sum()
 
 
-# Drop missing values
 df1 = df.dropna()
 df1.isnull().any()
 
 
-# Visualize correlation matrix
+
 fig, ax = plt.subplots(figsize=(7,7))
-from sklearn.preprocessing import LabelEncoder
-# Apply label encoding to categorical columns (assuming 'Gender' is a column with 'Male' and 'Female')
-encoder = LabelEncoder()
-df1['Gender'] = encoder.fit_transform(df1['Gender'])
+#from sklearn.preprocessing import LabelEncoder
+#encoder = LabelEncoder()
+#df1['Gender'] = encoder.fit_transform(df1['Gender'])
 sns.heatmap(abs(df1.corr()), annot=True, square=True, cbar=False, ax=ax, linewidths=0.25);
 
 
 # Drop correlated features
-df2 = df1.drop(columns= ['Direct_Bilirubin', 'Alamine_Aminotransferase', 'Total_Protiens'])
+#df2 = df1.drop(columns= ['Direct_Bilirubin', 'Alamine_Aminotransferase', 'Total_Protiens'])
+df1 = df.drop(columns= ['petal length (cm)'])
 
 
-df2['Dataset'] = df2['Dataset'].replace(1,0)
-df2['Dataset'] = df2['Dataset'].replace(2,1)
+#df2['Dataset'] = df2['Dataset'].replace(1,0)
+#df2['Dataset'] = df2['Dataset'].replace(2,1)
 
 
-print('How many people have disease:', '\n', df2.groupby('Gender')[['Dataset']].sum(), '\n')
-print('How many people participated in the study:', '\n', df2.groupby('Gender')[['Dataset']].count())
+#print('How many people have disease:', '\n', df2.groupby('Gender')[['Dataset']].sum(), '\n')
+#print('How many people participated in the study:', '\n', df2.groupby('Gender')[['Dataset']].count())
 
 
-print('Percentage of people with the disease depending on gender:')
-df2.groupby('Gender')[['Dataset']].sum()/ df2.groupby('Gender')[['Dataset']].count()
+#print('Percentage of people with the disease depending on gender:')
+#df2.groupby('Gender')[['Dataset']].sum()/ df2.groupby('Gender')[['Dataset']].count()
 
 
-# defining the X and y variables
 X = df2[['Gender', 'Total_Bilirubin','Alkaline_Phosphotase','Aspartate_Aminotransferase','Albumin','Albumin_and_Globulin_Ratio']]
 y = pd.Series(df2['Dataset'])
+#OR
+X = df1[['sepal length (cm)', 'sepal width (cm)', 'petal width (cm)']]
+y = pd.Series(df1['target'])
 
 
-labelencoder = LabelEncoder()
-X['Gender'] = labelencoder.fit_transform(X['Gender'])
+#labelencoder = LabelEncoder()
+#X['Gender'] = labelencoder.fit_transform(X['Gender'])
 
 
 x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -163,12 +171,6 @@ plt.legend()
 plt.show()
 
 
-x_ax = range(len(ytest))
-plt.scatter(x_ax, ytest, s=5, color="blue", label="original")
-plt.plot(x_ax, ypred1, lw=0.8, color="red", label="predicted")
-plt.legend()
-plt.show()
-
 
 xgb_reg = xgb.XGBRegressor(objective ='reg:linear', colsample_bytree = 0.3, learning_rate = 0.1,
                            max_depth = 5, alpha = 10, n_estimators = 10)
@@ -182,8 +184,8 @@ y_pred = xgb_reg.predict(X_test)
 mse2 = metrics.mean_squared_error(y_test, y_pred)
 print("MSE: %f" % (mse))
 
-
-xgb.plot_importance(xgb_reg)
+from xgboost.plotting import plot_importance
+plot_importance(xgb_reg)
 plt.rcParams['figure.figsize'] = [5, 5]
 plt.show()
 xgb = XGBRegressor()
